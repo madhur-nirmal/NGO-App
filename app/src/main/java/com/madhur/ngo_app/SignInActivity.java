@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -15,13 +14,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.madhur.ngo_app.models.User;
+import com.madhur.ngo_app.daos.UserDao;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -99,10 +98,20 @@ public class SignInActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
+            User user1 = new User();
+            user1.setName(user.getDisplayName());
+            user1.setUid(user.getUid());
+            user1.setImageUrl(user.getPhotoUrl().toString());
+
+            UserDao userDao = new UserDao();
+            userDao.addUser(user1);
+
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         } else {
             signInButton.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
     }
+
 }
