@@ -6,7 +6,8 @@ public class Post {
     private String text = "";
     private User createdBy;
     private Long createdAt = 0L;
-    private ArrayList<String> likedBy = null;
+    public ArrayList<String> likedBy = new ArrayList<>();
+
 
     public String getText() {
         return text;
@@ -21,7 +22,7 @@ public class Post {
     }
 
     public void setCreatedBy(User createdBy) {
-        
+
         this.createdBy = createdBy;
     }
 

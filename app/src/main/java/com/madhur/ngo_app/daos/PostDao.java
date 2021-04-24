@@ -3,22 +3,24 @@ package com.madhur.ngo_app.daos;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.madhur.ngo_app.models.Post;
 import com.madhur.ngo_app.models.User;
 
-import java.util.Map;
 import java.util.Objects;
 
 public class PostDao {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference postCollections = db.collection("posts");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    boolean isLiked = false;
+    Post postForLike;
+
+
 
 
     public void addPost(String text) {
@@ -39,7 +41,7 @@ public class PostDao {
                 .addOnFailureListener(e -> {
                     Log.d("Failure", "addPost: Failed");
                 });
-        
+
     }
 
     private void makePost(String text, User user) {
@@ -48,7 +50,31 @@ public class PostDao {
         Post post = new Post();
         post.setCreatedAt(currentTime);
         post.setCreatedBy(user);
+
         post.setText(text);
         postCollections.document().set(post);
     }
+
+    private Task<DocumentSnapshot> getPostById(String postID) {
+        return postCollections.document(postID).get();
+    }
+
+    public void onUpdateLikes(String postId) {
+        String currentUid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        getPostById(postId).addOnSuccessListener(documentSnapshot -> {
+            postForLike = documentSnapshot.toObject(Post.class);
+            isLiked = postForLike.getLikedBy().contains(currentUid);
+            if (isLiked) {
+                postForLike.likedBy.remove(currentUid);
+            } else {
+                postForLike.likedBy.add(currentUid);
+            }
+
+            postCollections.document(postId).set(postForLike);
+        }).addOnFailureListener(e -> {
+
+        });
+
+    }
+
 }

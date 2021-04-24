@@ -22,6 +22,5 @@ public class UserDao {
         return usersCollection
                 .document(uId)
                 .get();
-
     }
 }

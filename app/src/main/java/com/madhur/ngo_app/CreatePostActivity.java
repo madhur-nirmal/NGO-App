@@ -1,11 +1,10 @@
 package com.madhur.ngo_app;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.madhur.ngo_app.daos.PostDao;
 
@@ -24,6 +23,7 @@ public class CreatePostActivity extends AppCompatActivity {
             if (!input.isEmpty()) {
                 postDao.addPost(input);
             }
+            finish();
         });
     }
 }
