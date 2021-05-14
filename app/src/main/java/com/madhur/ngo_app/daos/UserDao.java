@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 public class UserDao {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference usersCollection = db.collection("users");
+    Task<DocumentSnapshot> documentSnapshotTask;
+
 
     public void addUser(@Nullable User user) {
         if (user != null) {
@@ -19,6 +21,10 @@ public class UserDao {
     }
 
     public Task<DocumentSnapshot> getUserById(String uId) {
+
+//        new Thread(() -> documentSnapshotTask =  usersCollection.document(uId).get());
+//        return documentSnapshotTask;
+//
         return usersCollection
                 .document(uId)
                 .get();
